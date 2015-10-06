@@ -1,0 +1,72 @@
+body{
+  background: #F3E2A9 !important;
+}
+#footer{
+  text-align: center;
+  padding-top: 60px;
+  padding-bottom: 20px;
+}
+#footer img{
+  padding-right: 30px;
+}
+#header{
+  padding: 10px;
+  text-align: right;
+  color:#0000FF;
+  background-color: #EA5D2C
+}
+#index-marco{
+  margin-top: 20px;
+  margin-bottom: 50px;
+  padding: 30px;
+  color: black;
+  background: #EA5D2C;
+  text-align: center;
+}
+#entrar{
+  margin: 15px;
+}
+#acceso{
+  margin-top: 10%;
+}
+#form-registro{
+  text-align:right;
+  padding-bottom: 40px;
+}
+#form-consulta{
+  text-align:right;
+  padding-bottom: 40px;
+}
+#chart_div{
+
+}
+
+#table_div{
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+#nuevo-usuario{
+
+}
+#nuevo-usuario *{
+  margin: 5px;
+}
+#eliminar-usuario{
+
+}
+#eliminar-usuario *{
+  margin: 5px;
+}
+#nuevo-farmaco{
+
+}
+#nuevo-farmaco *{
+  margin: 5px;
+}
+#eliminar-farmaco{
+
+}
+#eliminar-farmaco *{
+  margin: 5px;
+}
