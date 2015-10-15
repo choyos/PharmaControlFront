@@ -16,7 +16,6 @@ if(empty($_SESSION) && $title != "Acceso al portal"){
 <link type="image/x-icon" href="/img/US.gif" rel="shortcut icon"/>
 
 <link rel="stylesheet" href="/css/main_styles2.css">
-<link href="/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
 
 <link href="/datepicker/jquery-ui.css" rel="stylesheet">
@@ -25,8 +24,6 @@ if(empty($_SESSION) && $title != "Acceso al portal"){
 <script src="/datepicker/jquery-ui.js"></script>
 <script src="/chart/Chart.js"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script src="/js/bootstrap.min.js"></script>
-
 
 </head>
 <body>
