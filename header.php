@@ -32,7 +32,7 @@ if(empty($_SESSION) && $title != "Acceso al portal"){
 <body>
 <?
 
-$conn = mysqli_connect("db560723553.db.1and1.com", "dbo560723553", "h0spital", "db560723553");
+$conn = mysqli_connect("u870049570_pha.mysql.hostinger.es", "u870049570_upha", "/kWx&peGo7oRtTr");
 //echo "<pre>";var_dump($conn);die();
 mysqli_set_charset($conn, "utf8");
 // Check connection
