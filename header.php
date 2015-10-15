@@ -24,7 +24,9 @@ if(empty($_SESSION) && $title != "Acceso al portal"){
 <script src="/datepicker/jquery-ui.js"></script>
 <script src="/chart/Chart.js"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-
+<script language="JavaScript" type="text/javascript" src="/js/jquery-1.2.6.min.js"></script>
+<script language="JavaScript" type="text/javascript" src="/js/jquery-ui-personalized-1.5.2.packed.js"></script>
+<script language="JavaScript" type="text/javascript" src="/js/sprinkle.js"></script>
 </head>
 <body>
 <?
