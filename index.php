@@ -1,4 +1,4 @@
-<?php
+<?
 $title = "Acceso al portal";
 include("header.php");
 ?>
