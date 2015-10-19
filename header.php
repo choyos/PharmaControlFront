@@ -8,7 +8,8 @@ if(empty($_SESSION) && $title != "Acceso al portal"){
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
+<head>
 <title><?=$title?></title>
 
 <meta charset="UTF-8">
@@ -29,6 +30,7 @@ if(empty($_SESSION) && $title != "Acceso al portal"){
 <script language="JavaScript" type="text/javascript" src="/js/sprinkle.js"></script>
 </head>
 <body>
+
 <?
 
 $conn = mysqli_connect("mysql.hostinger.es", "u870049570_upha", "/kWx&peGo7oRtTr");
