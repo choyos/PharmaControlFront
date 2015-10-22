@@ -10,10 +10,7 @@ $inicio = date("Y-m-d", time() - 2419200);//2419200 segundos = 4 semanas;
 <div class="col-md-3"></div>
 
 <div class="col-md-6">
-  <p>Supplied directly pleasant we ignorant ecstatic of jointure so if. These spoke house of we. Ask put yet excuse person see change. Do inhabiting no stimulated unpleasing of admiration he. Enquire explain another he in brandon enjoyed be service. Given mrs she first china. Table party no or trees an while it since. On oh celebrated at be announcing dissimilar insipidity. Ham marked engage oppose cousin ask add yet.</p>
-
-  <p>Started his hearted any civilly. So me by marianne admitted speaking. Men bred fine call ask. Cease one miles truth day above seven. Suspicion sportsmen provision suffering mrs saw engrossed something. Snug soon he on plan in be dine some.</p><br><br>
-  
+<br>  
   <p>Estimador: <select id="estimador">
     <option value="">Ninguno</option>
     <option value="lineal">Lineal</option>

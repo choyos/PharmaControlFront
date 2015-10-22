@@ -4,12 +4,11 @@ session_start();
 
 if(empty($_SESSION) && $title != "Acceso al portal"){
   header('Location: /');
-  //die();
+  die();
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
-<head>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es"><head>
 <title><?=$title?></title>
 
 <meta charset="UTF-8">
@@ -17,19 +16,19 @@ if(empty($_SESSION) && $title != "Acceso al portal"){
 <link type="image/x-icon" href="/img/US.gif" rel="shortcut icon"/>
 
 <link rel="stylesheet" href="/css/main_styles2.css">
+<link rel="stylesheet" href="/css/bootstrap.min.css">
 <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
+<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
 
 <script src="/chart/Chart.js"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script language="JavaScript" type="text/javascript" src="/js/jquery-1.2.6.min.js"></script>
-<script language="JavaScript" type="text/javascript" src="/js/jquery-ui-personalized-1.5.2.packed.js"></script>
-<script language="JavaScript" type="text/javascript" src="/js/sprinkle.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+
 </head>
 <body>
-
 <?
 
-$conn = mysqli_connect("mysql.hostinger.es", "u870049570_upha", "/kWx&peGo7oRtTr");
+$conn = mysqli_connect("db597300977.db.1and1.com", "dbo597300977", "PharmaControl");
 //echo "<pre>";var_dump($conn);die();
 mysqli_set_charset($conn, "utf8");
 // Check connection
