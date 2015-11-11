@@ -2,7 +2,7 @@
 //$title = "Media aritmética";
 //include("header.php");
 
-$conn = mysqli_connect("db560723553.db.1and1.com", "dbo560723553", "h0spital", "db560723553");
+$conn = mysqli_connect("db597300977.db.1and1.com", "dbo597300977", "PharmaControl", "db597300977");
 //echo "<pre>";var_dump($conn);die();
 mysqli_set_charset($conn, "utf8");
 // Check connection

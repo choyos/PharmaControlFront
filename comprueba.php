@@ -2,7 +2,7 @@
 		$user = $_POST['nombre'];
 		$password = $_POST['clave'];
 		//conexion con el servidor My_sql.
-		$conn = mysqli_connect("db560723553.db.1and1.com", "dbo560723553", "h0spital", "db560723553") or die('No se pudo conectar: ' . mysql_error());
+		$conn = mysqli_connect("db597300977.db.1and1.com", "dbo597300977", "PharmaControl", "db597300977") or die('No se pudo conectar: ' . mysql_error());
 
 		// Realizar una consulta MySQL
 		$sql = "SELECT * FROM usuarios WHERE user = '$user'";
@@ -13,7 +13,7 @@
       //echo "correcta";
       session_start();
       $_SESSION["usuario"] = $user;
-      $_SESSION["permisos"] = $result['permisos'];
+      $_SESSION["permisos"] = $result['id_hospital'];
       echo "OK";
       //header('Location: /form');//clave correcta
     }else {
