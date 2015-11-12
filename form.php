@@ -5,6 +5,16 @@ include("header.php");
 $fin = date("Y-m-d"); //hoy
 $inicio = date("Y-m-d", time() - 2419200);//2419200 segundos = 4 semanas;
 
+
+  //Querys utiles para el trabajo con los campos select
+  $conn = new mysqli("db597300977.db.1and1.com", "dbo597300977", "PharmaControl", "db597300977");
+  if ($conn->connect_error){
+    die("Connection failed: " . $conn->connect_error);
+  }
+  $sql_pass = "SELECT id, nombre FROM hospital";
+  $sql_hospital = "SELECT id, nombre FROM hospital WHERE NOT id = 0";
+  $sql_Labs = "SELECT id, nombre FROM laboratorios";
+
 ?>
 
 <div class="col-md-3"></div>

@@ -21,7 +21,11 @@ switch ($form) {
 		fwrite($ficheroMed, "".$medicine['coste_recogida']."\n");
 		fwrite($ficheroMed, "".$medicine['coste_sin_stock']."\n");
 		fwrite($ficheroMed, "".$medicine['coste_oportunidad']."\n");
-		fwrite($ficheroMed, "Aquí van los repartidos\n");
+		$estimaciones = array();
+		$estimaciones = calculaRepartidos($_POST['horizonte'], $_POST['estimador'], $medicine['id']);
+		foreach ($estimaciones as $value) {
+			fwrite($ficheroMed, "".$value."\n"); //Sustituir por los valores estimados a futuro 
+		}
 		fwrite($ficheroMed, "".$medicine['maximo_uds']."\n");
 		fwrite($ficheroMed, "".$medicine['minimo_uds']."\n");
 		$nTamPedidos = 0;
@@ -51,7 +55,14 @@ switch ($form) {
 		fwrite($ficheroMed, "".$medicine['coste_recogida']."\n");
 		fwrite($ficheroMed, "".$medicine['coste_sin_stock']."\n");
 		fwrite($ficheroMed, "".$medicine['coste_oportunidad']."\n");
-		fwrite($ficheroMed, "Aquí van los repartidos\n"); //Sustituir por los valores estimados a futuro 
+		
+		$estimaciones = array();
+		$estimaciones = calculaRepartidos($_POST['horizonte'], $_POST['estimador'], $medicine['id']);
+		foreach ($estimaciones as $value) {
+			fwrite($ficheroMed, "".$value."\n"); //Sustituir por los valores estimados a futuro 
+		}
+		
+
 		fwrite($ficheroMed, "".$medicine['maximo_uds']."\n");
 		fwrite($ficheroMed, "".$medicine['minimo_uds']."\n");
 		$nTamPedidos = 0;
@@ -88,8 +99,11 @@ switch ($form) {
 			fwrite($ficheroMed, "".$medicine['coste_sin_stock']."\n");
 			fwrite($ficheroMed, "".$medicine['coste_oportunidad']."\n");
 			
-			//Copiar al resto de posibilidades
-			fwrite($ficheroMed, "Aquí van los repartidos\n"); //Sustituir por los valores estimados a futuro 
+			$estimaciones = array();
+			$estimaciones = calculaRepartidos($_POST['horizonte'], $_POST['estimador'], $medicine['id']);
+			foreach ($estimaciones as $value) {
+				fwrite($ficheroMed, "".$value."\n"); //Sustituir por los valores estimados a futuro 
+			}
 			$arrayRepartidos = array();
 			$arrayRepartidos = calculaRepartidos($_POST['horizonte'], $_POST['estimador'], $medicine['id']);
 
@@ -123,18 +137,19 @@ switch ($form) {
 }
 
 function calculaRepartidos($horizonte, $estimador, $idFarmaco){
-	
+
+	$conn = mysqli_connect("db597300977.db.1and1.com", "dbo597300977", "PharmaControl", "db597300977");
 
 	$estimacion = array();
-	$repartidos = array();
 	$diasPrevios = 28;
 	$segundosDia = 86400;
 	
 	switch ($estimador) {
 		case '0':	//Enfoque simple
+			$repartidos = array();
 			$fechaFin = date("Y-m-d"); 						//Hoy
-		    $fechaInicio = date("Y-m-d", time() - 2419200);	//Un mes antes
-			$sql = "SELECT * FROM `registros` WHERE id_farmaco = '".$idFarmaco."' AND `fecha` BETWEEN '".$fechaFin."' AND '".$fechaInicio."' ORDER BY `fecha`";
+		    $fechaInicio = date("Y-m-d", time() - $diasPrevios*$segundosDia);	//Un mes antes
+			$sql = "SELECT * FROM `registros` WHERE id_farmaco = '".$idFarmaco."' AND `fecha` BETWEEN '".$fechaInicio."' AND '".$fechaFin."' ORDER BY `fecha`";
 
 			foreach ($conn->query($sql) as $registro) {
 				array_push($repartidos, $registro['cantidad']);
@@ -152,19 +167,20 @@ function calculaRepartidos($horizonte, $estimador, $idFarmaco){
 		
 		case '1':	//Media lineal
 
+			$repartidos = array();
 			$fechaFin = date("Y-m-d"); 						//Hoy
-		    $fechaInicio = date("Y-m-d", time() - 2419200);	//Un mes antes
+		    $fechaInicio = date("Y-m-d", time() - $diasPrevios*$segundosDia);	//Un mes antes
 		
 			for ($i=0; $i < $horizonte; $i++) {
-				if( $i = 0){
-					$sql = "SELECT * FROM `registros` WHERE id_farmaco = '".$idFarmaco."' AND `fecha` BETWEEN '".$fechaFin."' AND '".$fechaInicio."' ORDER BY `fecha`";
+				if( $i == 0){
+					$sql = "SELECT * FROM `registros` WHERE id_farmaco = '".$idFarmaco."' AND `fecha` BETWEEN '".$fechaInicio."' AND '".$fechaFin."' ORDER BY `fecha`";
 
 					foreach ($conn->query($sql) as $registro) {
 						array_push($repartidos, $registro['cantidad']);
 					}
 
 					$media = round(array_sum($repartidos)/28);	//Media del mes
-					array_push($estimacion, $media)
+					array_push($estimacion, $media);
 				}else{
 					$sql = "SELECT * FROM `registros` WHERE id_farmaco = '".$idFarmaco."' AND `fecha` BETWEEN '".$fechaFin."' AND '".$fechaInicio."' ORDER BY `fecha`";
 
@@ -186,26 +202,30 @@ function calculaRepartidos($horizonte, $estimador, $idFarmaco){
 		case '2':	//Alisamiento exponencial
 		
 			$fechaFin = date("Y-m-d"); 						//Hoy
-		    $fechaInicio = date("Y-m-d", time() - 2419200);	//Cuatro semanas antes
+		    $fechaInicio = date("Y-m-d", time() - $diasPrevios*$segundosDia);	//Cuatro semanas antes
 		
 		    $alpha = 0.5;
 
 		    $vectorPonderacion = array();
 
 		    for($i = 0; $i < $diasPrevios; $i++){
-		    	array_push($vectorPonderacion, (1/($diasPrevios-1-$i)) ** $alpha);
+		    	array_push($vectorPonderacion, pow(1/($diasPrevios-1-$i), $alpha));
 		    }
 
 		    $sumPonderacion = array_sum($vectorPonderacion);	//Valor entre el cual dividir para tener media ponderada
 
+			
 			for ($i=0; $i < $horizonte; $i++) {
 
 				$arrayMedia = array();
-
+				$repartidos = array();
+				
 				//Bucle para generar la estimacion de cada dia en el horizonte
 				for($j = 0; $j < $diasPrevios; $j++){
 					
 					if($fechaInicio <= $fechaFin){
+
+
 						$sql = "SELECT * FROM `registros` WHERE id_farmaco = '".$idFarmaco."' AND `fecha` = '".$fechaInicio."'";
 
 						$flag = 0;
@@ -223,14 +243,16 @@ function calculaRepartidos($horizonte, $estimador, $idFarmaco){
 						array_push($repartidos, $estimacion[$index]);
 					}
 
-					$fechaInicio = date("Y-m-d", time() - $diasPrevios*$segundosDia + ($i+1) * $segundosDia); //Avanzamos en un día la siguiente petición
+					$fechaInicio = date("Y-m-d", time() - $diasPrevios*$segundosDia + ($j+1) * $segundosDia); //Avanzamos en un día la siguiente petición
 				}
+
+				$fechaInicio = date("Y-m-d", time() - $diasPrevios*$segundosDia + ($i+1) * $segundosDia); //Avanzamos en un día la siguiente petición
 
 				//Multiplicamos los vectores de ponderacion y repartidos para obtener la estimacion
 				for($j = 0; $j < $diasPrevios; $j++){
 					array_push($arrayMedia, $repartidos[$j] * $vectorPonderacion[$j]);
 				}
-				array_push($estimacion, array_sum($arrayMedia)/$sumPonderacion);
+				array_push($estimacion, round(array_sum($arrayMedia)/$sumPonderacion));
 
 			}
 
