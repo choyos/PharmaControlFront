@@ -67,9 +67,9 @@ $inicio = date("Y-m-d", time() - 2419200);//2419200 segundos = 4 semanas;
     <input type="number" name="numpedidos" title="Número de días de pedido" placeholder="Número de días de pedido">
     <p>Estimador: </p>
     <select name="estimador">
-      <option value="">Ninguno</option>
-      <option value="lineal">Lineal</option>
-      <option value="alisamiento">Alisamiento Exponencial</option>
+      <option value="0">Ninguno</option>
+      <option value="1">Lineal</option>
+      <option value="2">Alisamiento Exponencial</option>
     </select>
     <input type="hidden" name="form" value="2" />
     <p><input type="submit" value="Calcular" /></p>
@@ -95,9 +95,9 @@ $inicio = date("Y-m-d", time() - 2419200);//2419200 segundos = 4 semanas;
     <input type="number" name="numpedidos" title="Número de días de pedido" placeholder="Número de días de pedido">
     <p>Estimador: </p>
     <select name="estimador">
-      <option value="">Ninguno</option>
-      <option value="lineal">Lineal</option>
-      <option value="alisamiento">Alisamiento Exponencial</option>
+      <option value="0">Ninguno</option>
+      <option value="1">Lineal</option>
+      <option value="2">Alisamiento Exponencial</option>
     </select>
     <input type="hidden" name="form" value="3" />
     <p><input type="submit" value="Calcular" /></p>
