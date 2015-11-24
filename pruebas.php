@@ -34,22 +34,27 @@ $("document").ready(function(){
       url: "response.php", //Relative or absolute path to response.php file
       data: data,
       success: function(data) {
-        var hoy = new Date();
-        var dayOfMonth = hoy.getDate();
-        var resultado = "" + data['result'];
+      var resultado = "" + data['result'];
+      var msDia = 86400000;
       //  resultado += " " + data['result']['Coste_lab'];
       switch(data['form']){
         case '1':
-          info = JSON.parse(data['result']);
-        /*  var count = 0;
+        info = JSON.parse(data['result']);
+          var count = 0;
+          var fechasPedido = new Array();
           for (i in info.pedidoOpt){
-
             if(info.pedidoOpt[i] != 0){
-              fechasPedido[count] = dayOfMonth;
+              fechasPedido.push(new Date());
+              msDate = fechasPedido[count].getTime();
+              fechasPedido[count] = new Date(msDate + i * msDia);
+              resultado += "Prueba: " + i + " Fecha: " + fechasPedido[count] + " -> Cantidad: " + info.pedidoOpt[i] + "<br />";
+
+              /*fechasPedido.push(dayOfMonth);
               fechasPedido[count].setDate(dayOfMonth + i);
+              */
               count++;
             }
-          }*/
+          }
           resultado += "JSON-> " + JSON.stringify(info) + "<br />";
         break;
         case '2':
