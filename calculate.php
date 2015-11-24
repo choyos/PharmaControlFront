@@ -21,16 +21,16 @@ $inicio = date("Y-m-d", time() - 2419200);//2419200 segundos = 4 semanas;
 
 <h2 style="color: red; margin-left: 15px">Cálculo de pedidos de <?echo ucfirst($_SESSION['usuario'])?></h2>
 
-<!--Calculo para hospital-->
+<!--Calculo para medicamento
 <div class="col-md-3">
-  <form id="calcular-farmaco" method="post" action="/admin-calculate">
+  <form id="calcular-farmaco" method="post" action="/admin-calculate" class="js-ajax-php-json">
     <fieldset>
     <legend>Calcular por fármaco</legend>
     <select name="id_farmacy">
       <option value="" disabled selected>Farmaco</option>
-      <? foreach($conn->query($sql_farmacos) as $farmaco) {
+      <?/* foreach($conn->query($sql_farmacos) as $farmaco) {
           echo '<option value= "' . $farmaco['id'] .'" > ' . $farmaco['nombre'].'</option>';
-        } 
+        } */
      ?>
     </select>
     <br>
@@ -44,14 +44,14 @@ $inicio = date("Y-m-d", time() - 2419200);//2419200 segundos = 4 semanas;
       <option value="2">Alisamiento Exponencial</option>
     </select>
     <input type="hidden" name="form" value="1" />
-    <p><input type="submit" value="Calcular" /></p>
+    <p><input type="submit" name="submit" value="Calcular" /></p>
     </fieldset>
   </form>
-</div>
+</div>-->
 
-<!--Calculo para laboratorio-->
+<!-- Calculo para laboratorio-->
 <div class="col-md-3">
-  <form id="calcular-laboratorio" method="post" action="/admin-calculate">
+  <form id="calcular-laboratorio" method="post" action="/admin-calculate" class="js-ajax-php-json">
     <fieldset>
     <legend>Calcular por laboratorio</legend>
     <select name="id_lab">
@@ -72,21 +72,21 @@ $inicio = date("Y-m-d", time() - 2419200);//2419200 segundos = 4 semanas;
       <option value="2">Alisamiento Exponencial</option>
     </select>
     <input type="hidden" name="form" value="2" />
-    <p><input type="submit" value="Calcular" /></p>
+    <p><input type="submit" name="submit" value="Calcular" /></p>
     </fieldset>
   </form>
-</div>
+</div> 
 
-<!--Calculo para hospital-->
+<!--Calculo para hospital
 <div class="col-md-3">
-  <form id="calcular-hospital" method="post" action="/admin-calculate">
+  <form action="admin-calculate.php" class="js-ajax-php-json" 1method="post" accept-charset="utf-8">
     <fieldset>
     <legend>Calcular por hospital</legend>
     <select name="id_hospital">
       <option value="" disabled selected>Hospital</option>
-      <? foreach($conn->query($sql_hospital) as $hospital) {
+      <?/* foreach($conn->query($sql_hospital) as $hospital) {
           echo '<option value= "' . $hospital['id'] .'" > ' . $hospital['nombre'].'</option>';
-        } 
+        } */
      ?>
     </select>
     <br>
@@ -99,11 +99,10 @@ $inicio = date("Y-m-d", time() - 2419200);//2419200 segundos = 4 semanas;
       <option value="1">Lineal</option>
       <option value="2">Alisamiento Exponencial</option>
     </select>
-    <input type="hidden" name="form" value="3" />
-    <p><input type="submit" value="Calcular" /></p>
+    <p><input type="submit" name="submit" value="Calcular" /></p>
     </fieldset>
   </form>
-</div>
+</div> -->
 
 <div class="col-md-3"></div>
 
@@ -111,69 +110,35 @@ $inicio = date("Y-m-d", time() - 2419200);//2419200 segundos = 4 semanas;
   <div id="columnchart_material"></div>
 </div>
 
+<div class="the-return">
+</div>
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+  $("document").ready(function(){
+    $(".js-ajax-php-json").submit(function(){
+      var data = {
+        "action": "calculate"
+      };
+      data = $(this).serialize() + "&" + $.param(data);
+      $.ajax({
+        type: "POST",
+        dataType: "json",
+        url: "admin-calculate.php", //Relative or absolute path to response.php file
+        data: data,
+        success: function(data) {
+          $(".the-return").html(
+            "Favorite beverage: " + data["FarmacoPrueba.pha"] + "<br />Favorite restaurant: " + data["Farmaosi.pha"] + "<br />Gender: " + data["FarmaB.pha"] + "<br />JSON: " + data["json"]
+          );
+
+          alert("Form submitted successfully.\nReturned json: " + data["json"]);
+        }
+      });
+      return false;
+    });
+  });
+</script>
 
 <?
 include("footer.php");
 ?>
-
-<script type="text/javascript" src="https://www.google.com/jsapi"></script>
-<script type="text/javascript">
-
-$(document).ready(function() {
-  
-  $('#estimador').change(function(){
-    var estimador = $('#estimador').val();
-    var farmaco = $('#farmaco').val();
-    console.log("change: " + estimador);
-  })
-  
-  
-  
-  $("#calculate").click(function(){
-    
-    var estimador = $('#estimador').val();
-    var farmaco = $('#farmaco').val();
-    console.log("calculate: " + farmaco);
-    
-    //
-    //Aquí meter la petición Ajax que escriba los datos en el fichero datos.pha
-    //
-    
-    drawChart();
-  });
-});
-
-google.load("visualization", "1.1", {packages:["bar"]});
-//google.setOnLoadCallback(drawChart);
-      function drawChart() {
-        $.ajax({
-          url: "OFH/launch-c",
-          dataType: "json",
-          success: function (jsonData) {
-            if(jsonData.status == "OK"){
-              var data = new google.visualization.DataTable();
-              data.addColumn('string', 'Fecha');
-              data.addColumn('number', 'Pedido');
-              data.addColumn('number', 'Óptimo');
-            
-
-              for (var i = 0; i < jsonData.data.length; i++) {
-                data.addRow([jsonData.data[i].fecha, jsonData.data[i].pedido, jsonData.data[i].optimo]);
-              }
-
-              var options = {
-                chart: {
-                  title: 'Pedido a Realizar',
-                  subtitle: 'Sales, Expenses, and Profit: 2014-2017',
-                }
-              };
-
-              var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
-              chart.draw(data, options);
-            }else{
-              console.log("status: " + jsonData.status);
-            }
-          }
-        });
-      }
-</script>

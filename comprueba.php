@@ -14,14 +14,12 @@
       session_start();
       $_SESSION["usuario"] = $user;
       $_SESSION["permisos"] = $result['id_hospital'];
+      header('Location: /form');//clave correcta
       echo "OK";
-      //header('Location: /form');//clave correcta
     }else {
       //echo "incorrecta";
+      header('Location: /indexerror');//clave incorrecta
       echo "NOK";
-      //header('location: /indexerror');//clave incorrecta
     }
 
-// Cerrar la conexión
-mysql_close($conn);
 ?>

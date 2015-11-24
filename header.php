@@ -18,7 +18,7 @@ if(empty($_SESSION) && $title != "Acceso al portal"){
 <link rel="stylesheet" href="/css/main_styles2.css">
 <link rel="stylesheet" href="/css/bootstrap.min.css">
 <link rel="stylesheet" href="/font-awesome/css/font-awesome.min.css">
-<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 
 <script src="/chart/Chart.js"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -52,6 +52,7 @@ if($title != "Acceso al portal"){
           <li><a href="/calculate"><i class="fa fa-calculator"></i>  Calcular pedido</a></li>
           <li><a href="/form"><i class="fa fa-bar-chart"></i>  Inicio</a></li>
           <li><a href="/log-out"><i class="fa fa-sign-out"></i>  Cerrar sesión</a></li>
+          <li><a href="/pruebas"><i class="fa fa-exclamation-triangle"></i> Pruebas</a></li>
         </ul>
       </div>
     </div>

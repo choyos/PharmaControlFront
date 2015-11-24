@@ -1,13 +1,11 @@
 <?
 $title = "Acceso al portal";
 include("header.php");
-
 // Borrar variables de sesión
 session_unset(); 
 
 // cerrar la sesión
 session_destroy(); 
-
 ?>
 <h1 id="index-marco">ACCESO USUARIOS</h1>
 <div id="acceso" style="text-align: center;">
@@ -21,6 +19,7 @@ session_destroy();
     <input type="hidden" name="form"/>
     <p><input type="submit" value="Acceder" /></p>
   </form>
+  <p style="color: red" >Usuario o clave incorrectos</p>
 </div>
 
  <?
