@@ -27,24 +27,18 @@ function test_function(){
     echo "Imposible conectar: " . mysqli_connect_error();
   }
 
-  switch ($_POST['form']) {
-    case '1':
-
-      $sql = "SELECT * FROM `farmacos` WHERE id = '".$_POST['id_farmacy']."'";
-      $ficheroMed = fopen("datos.pha", "w");  //Se debe escribir en "datos.pha"
-      foreach ($conn->query($sql) as $medicine) {
-        fwrite($ficheroMed, "".$medicine['stock']."\n");
+  //Caso de calculo por multiescenario
+  if($_POST['estimador'] == 3){
+    $sql = "SELECT * FROM `farmacos` WHERE id = '".$_POST['id_farmacy']."'";
+    $ficheroMed = fopen("datos.pha", "w");  //Se debe escribir en "datos.pha"
+    foreach ($conn->query($sql) as $medicine) {
+      fwrite($ficheroMed, "".$medicine['stock']."\n");
       fwrite($ficheroMed, "".$medicine['precio_med']."\n");
       fwrite($ficheroMed, "".$medicine['coste_almacenamiento']."\n");
       fwrite($ficheroMed, "".$medicine['coste_pedido']."\n");
       fwrite($ficheroMed, "".$medicine['coste_recogida']."\n");
       fwrite($ficheroMed, "".$medicine['coste_sin_stock']."\n");
       fwrite($ficheroMed, "".$medicine['coste_oportunidad']."\n");
-      $estimaciones = array();
-      $estimaciones = calculaRepartidos($_POST['horizonte'], $_POST['estimador'], $medicine['id']);
-      foreach ($estimaciones as $value) {
-        fwrite($ficheroMed, "".$value."\n"); //Sustituir por los valores estimados a futuro 
-      }
       fwrite($ficheroMed, "".$medicine['maximo_uds']."\n");
       fwrite($ficheroMed, "".$medicine['minimo_uds']."\n");
       $nTamPedidos = 0;
@@ -55,27 +49,158 @@ function test_function(){
       foreach ($conn->query("SELECT * FROM `tamanos_pedidos` WHERE id_farmaco = '".$medicine['id']."'") as $pedido) {
         fwrite($ficheroMed, "".$pedido['tam_pedido']."\n");
       }
+      //LLENE DE LOS REGISTROS UTILES DE LAS ULTIMAS x semanas
+      $segundosDia = 86400;
+      $diasPeriodo = $_POST['horizonte'];
+      $numPeriodos = 10;
+      $diasTotal = $diasPeriodo * $numPeriodos;
+      $fechaFin = date("d-m-Y");            //Hoy
+      $fechaInicio = date("d-m-Y", time() - $diasTotal*$segundosDia); //Un mes antes
+      $registros = array();
+      fwrite($ficheroMed, "".$diasTotal."\n");
+      for($j = 0; $j < $diasTotal; $j++){
+          
+          $sql = "SELECT * FROM `registros` WHERE id_farmaco = '".$medicine['id']."' AND `fecha` = '".$fechaInicio."'";
+
+          $flagReg = 0;
+
+          //Obtenemos el vector de pedidos con indice util para trabajar
+          foreach ($conn->query($sql) as $registro) {
+            $flagReg = 1;
+            array_push($registros, $registro['cantidad']);
+          }
+          if($flagReg == 0){
+            array_push($registros, 0);
+          }
+
+        $fechaInicio = date("Y-m-d", time() - $diasTotal*$segundosDia + ($j+1) * $segundosDia); //Avanzamos en un día la siguiente petición
       }
-      fclose($ficheroMed);  //Se cierra el fichero, eliminando el manejador
-    break;
-    case '2':
+      foreach ($registros as $value) {
+        fwrite($ficheroMed, "".$value."\n");
+      }
+  /*
+*/
+    }
+    fclose($ficheroMed);  //Se cierra el fichero, eliminando el manejador
+    //Ejecutar ./OFHTipo x
+    $return['result'] = "Funciona";
 
+    $return['json'] = json_encode($return);
+    echo json_encode($return);
+  }else{
+    switch ($_POST['form']) {
+      case '1':
 
-      $sql = "SELECT * FROM `farmacos` WHERE id_lab = '".$_POST['id_lab']."'";
-      $ficheroLabs = fopen("ficheros.pha", "w");  //Se escriben los nombres de los ficheros en "ficheros.pha"
-      $flagMed = 0;
-      foreach ($conn->query($sql) as $medicine) {
-        
-        $farmaFile = "".$medicine['nombre'].".pha";   //El resto de datos se escriben en sus ficheros correspondientes
-        if($flagMed == 0){
-          fwrite($ficheroLabs, "".$farmaFile."");
-          $flagMed = 1;
-        }else{
-          fwrite($ficheroLabs, "\n".$farmaFile."");
+        $sql = "SELECT * FROM `farmacos` WHERE id = '".$_POST['id_farmacy']."'";
+        $ficheroMed = fopen("datos.pha", "w");  //Se debe escribir en "datos.pha"
+        foreach ($conn->query($sql) as $medicine) {
+          fwrite($ficheroMed, "".$medicine['stock']."\n");
+        fwrite($ficheroMed, "".$medicine['precio_med']."\n");
+        fwrite($ficheroMed, "".$medicine['coste_almacenamiento']."\n");
+        fwrite($ficheroMed, "".$medicine['coste_pedido']."\n");
+        fwrite($ficheroMed, "".$medicine['coste_recogida']."\n");
+        fwrite($ficheroMed, "".$medicine['coste_sin_stock']."\n");
+        fwrite($ficheroMed, "".$medicine['coste_oportunidad']."\n");
+        $estimaciones = array();
+        $estimaciones = calculaRepartidos($_POST['horizonte'], $_POST['estimador'], $medicine['id']);
+        foreach ($estimaciones as $value) {
+          fwrite($ficheroMed, "".$value."\n"); //Sustituir por los valores estimados a futuro 
         }
-        $ficheroMed = fopen("".$farmaFile, "w");
-       
-        fwrite($ficheroMed, "".$medicine['stock']."\n");
+        fwrite($ficheroMed, "".$medicine['maximo_uds']."\n");
+        fwrite($ficheroMed, "".$medicine['minimo_uds']."\n");
+        $nTamPedidos = 0;
+        foreach ($conn->query("SELECT * FROM `tamanos_pedidos` WHERE id_farmaco = '".$medicine['id']."'") as $pedido) {
+          $nTamPedidos = $nTamPedidos + 1;
+        }
+        fwrite($ficheroMed, $nTamPedidos."\n");
+        foreach ($conn->query("SELECT * FROM `tamanos_pedidos` WHERE id_farmaco = '".$medicine['id']."'") as $pedido) {
+          fwrite($ficheroMed, "".$pedido['tam_pedido']."\n");
+        }
+        }
+        fclose($ficheroMed);  //Se cierra el fichero, eliminando el manejador
+      break;
+      case '2':
+
+
+        $sql = "SELECT * FROM `farmacos` WHERE id_lab = '".$_POST['id_lab']."'";
+        $ficheroLabs = fopen("ficheros.pha", "w");  //Se escriben los nombres de los ficheros en "ficheros.pha"
+        $flagMed = 0;
+        foreach ($conn->query($sql) as $medicine) {
+          
+          $farmaFile = "".$medicine['nombre'].".pha";   //El resto de datos se escriben en sus ficheros correspondientes
+          if($flagMed == 0){
+            fwrite($ficheroLabs, "".$farmaFile."");
+            $flagMed = 1;
+          }else{
+            fwrite($ficheroLabs, "\n".$farmaFile."");
+          }
+          $ficheroMed = fopen("".$farmaFile, "w");
+         
+          fwrite($ficheroMed, "".$medicine['stock']."\n");
+          fwrite($ficheroMed, "".$medicine['precio_med']."\n");
+          fwrite($ficheroMed, "".$medicine['coste_almacenamiento']."\n");
+          fwrite($ficheroMed, "".$medicine['coste_pedido']."\n");
+          fwrite($ficheroMed, "".$medicine['coste_recogida']."\n");
+          fwrite($ficheroMed, "".$medicine['coste_sin_stock']."\n");
+          fwrite($ficheroMed, "".$medicine['coste_oportunidad']."\n");
+          
+          $estimaciones = array();
+          $estimaciones = calculaRepartidos($_POST['horizonte'], $_POST['estimador'], $medicine['id']);
+          foreach ($estimaciones as $value) {
+            fwrite($ficheroMed, "".$value."\n"); //Sustituir por los valores estimados a futuro 
+          }
+          
+
+          fwrite($ficheroMed, "".$medicine['maximo_uds']."\n");
+          fwrite($ficheroMed, "".$medicine['minimo_uds']."\n");
+          $nTamPedidos = 0;
+          $tamPedidos = array();
+          foreach ($conn->query("SELECT * FROM `tamanos_pedidos` WHERE id_farmaco = '".$medicine['id']."'") as $pedido) {
+            array_push($tamPedidos, $pedido['tam_pedido']);
+            $nTamPedidos = $nTamPedidos + 1;
+          }
+          fwrite($ficheroMed, $nTamPedidos."\n");
+          $flagPed = 0;
+          foreach ($tamPedidos as $pedido) {
+            if($flagPed == 0){
+              fwrite($ficheroMed, "".$pedido."");
+              $flagPed = 1;
+            }else{
+              fwrite($ficheroMed, "\n".$pedido."");
+            }
+          }
+          /*
+         */   
+            fclose($ficheroMed);
+        }
+        fclose($ficheroLabs);
+        
+      break;
+      case '3':
+      $sql = "SELECT * FROM `laboratorios` WHERE id_hospital = '".$_POST['id_hospital']."'";
+      $ficheroHospital = fopen("labs.pha", "w");
+      $flagLab = 0;
+      foreach ($conn->query($sql) as $lab) {
+        $labFile = "".$lab['nombre'].".pha";
+        if($flagLab == 0){
+          fwrite($ficheroHospital, "".$labFile."");
+          $flagLab = 1;
+        }else{
+          fwrite($ficheroHospital, "\n".$labFile."");
+        }
+        $ficheroLabs = fopen("".$labFile, "w");
+        $sqlFar = "SELECT * FROM `farmacos` WHERE id_lab = '".$lab['id']."'";
+        $flagMed = 0;
+        foreach ($conn->query($sqlFar) as $medicine) {
+          $farmaFile = "".$medicine['nombre'].".pha";   //El resto de datos se escriben en sus ficheros correspondientes
+          if($flagMed == 0){
+            fwrite($ficheroLabs, "".$farmaFile."");
+            $flagMed = 1;
+          }else{
+            fwrite($ficheroLabs, "\n".$farmaFile."");
+          }
+          $ficheroMed = fopen("".$farmaFile, "w");
+          fwrite($ficheroMed, "".$medicine['stock']."\n");
         fwrite($ficheroMed, "".$medicine['precio_med']."\n");
         fwrite($ficheroMed, "".$medicine['coste_almacenamiento']."\n");
         fwrite($ficheroMed, "".$medicine['coste_pedido']."\n");
@@ -88,14 +213,13 @@ function test_function(){
         foreach ($estimaciones as $value) {
           fwrite($ficheroMed, "".$value."\n"); //Sustituir por los valores estimados a futuro 
         }
-        
 
+        //Final del proceso de escribir los datos estimados
         fwrite($ficheroMed, "".$medicine['maximo_uds']."\n");
         fwrite($ficheroMed, "".$medicine['minimo_uds']."\n");
         $nTamPedidos = 0;
         $tamPedidos = array();
         foreach ($conn->query("SELECT * FROM `tamanos_pedidos` WHERE id_farmaco = '".$medicine['id']."'") as $pedido) {
-          array_push($tamPedidos, $pedido['tam_pedido']);
           $nTamPedidos = $nTamPedidos + 1;
         }
         fwrite($ficheroMed, $nTamPedidos."\n");
@@ -108,23 +232,22 @@ function test_function(){
             fwrite($ficheroMed, "\n".$pedido."");
           }
         }
-        /*
-       */   
           fclose($ficheroMed);
+        }
+        fclose($ficheroLabs);
       }
-      fclose($ficheroLabs);
-      
-    break;
-    default:
-      # code...
-    break;
-  }
-  
-  //Ejecutar ./OFHLab
-  $return['result'] = lanzaC($_POST['form'], $_POST['horizonte'], $_POST['numpedidos']);
+      fclose($ficheroHospital);
+      break;
+      default:
+        # code...
+      break;
+    }
+    //Ejecutar ./OFHTipo x
+    $return['result'] = lanzaC($_POST['form'], $_POST['horizonte'], $_POST['numpedidos']);
 
-  $return['json'] = json_encode($return);
-  echo json_encode($return);
+    $return['json'] = json_encode($return);
+    echo json_encode($return);
+  }
 }
 
 
@@ -162,7 +285,7 @@ function calculaRepartidos($horizonte, $estimador, $idFarmaco){
 
       $repartidos = array();
       $fechaFin = date("Y-m-d");            //Hoy
-        $fechaInicio = date("Y-m-d", time() - $diasPrevios*$segundosDia); //Un mes antes
+      $fechaInicio = date("Y-m-d", time() - $diasPrevios*$segundosDia); //Un mes antes
     
       for ($i=0; $i < $horizonte; $i++) {
         if( $i == 0){

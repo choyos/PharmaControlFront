@@ -34,41 +34,71 @@ $("document").ready(function(){
       url: "response.php", //Relative or absolute path to response.php file
       data: data,
       success: function(data) {
-      var resultado = "" + data['result'];
-      var msDia = 86400000;
-      //  resultado += " " + data['result']['Coste_lab'];
-      switch(data['form']){
-        case '1':
-        info = JSON.parse(data['result']);
-          var count = 0;
-          var fechasPedido = new Array();
-          for (i in info.pedidoOpt){
-            if(info.pedidoOpt[i] != 0){
-              fechasPedido.push(new Date());
-              msDate = fechasPedido[count].getTime();
-              fechasPedido[count] = new Date(msDate + i * msDia);
-              resultado += "Prueba: " + i + " Fecha: " + fechasPedido[count] + " -> Cantidad: " + info.pedidoOpt[i] + "<br />";
+        var resultado = "";
+        var msDia = 86400000;
+        if(data['estimador'] == 3){
+          resultado += "Multiescenarios: " + data['result'];
+          $(".the-return").html(
+            "Resultado: <br />" + resultado +"<br />"
+          );
+        }else{
+          switch(data['form']){
+            case '1':
+            info = JSON.parse(data['result']);
+              var count = 0;
+              var fechasPedido = new Array();
+              for (i in info.pedidoOpt){
+                if(info.pedidoOpt[i] != 0){
+                  fechasPedido.push(new Date());
+                  msDate = fechasPedido[count].getTime();
+                  fechasPedido[count] = new Date(msDate + i * msDia);
+                  resultado += " Fecha: " + fechasPedido[count].getDate() + "/" + (fechasPedido[count].getMonth()+1) + "/" + fechasPedido[count].getFullYear() + " -> Cantidad: " + info.pedidoOpt[i] + "<br />";
+                  count++;
+                }
+              }
+              resultado += " Coste: " + info.Coste_med + "<br />";
+            break;
+            case '2':
+            info = JSON.parse(data['result']);
+            var count = 0;
+            var fechasPedido = new Array();
+            var msDate;
+            for (var key in info){
+              far = key.substr(0, key.indexOf('.'));
+              if (key != "Coste_lab"){
+                resultado += "" + far + ":<br />";
+                for (var key2 in info[key].pedidoOpt){
+                  if(info[key].pedidoOpt[key2] != 0){
+                    fechasPedido.push(new Date());
+                    msDate = fechasPedido[count].getTime();
+                    fechasPedido[count] = new Date(msDate + i * msDia);
+                    resultado += "- Fecha: " + fechasPedido[count].getDate() + "/" + (fechasPedido[count].getMonth()+1) + "/" + fechasPedido[count].getFullYear() + " -> Cantidad: " + info[key].pedidoOpt[key2] + "<br />";
+                    count++;
+                  }
+                }
+                if(count == 0 ){
+                  resultado += "- No se requieren de pedidos en este periodo <br />";
+                }
+                count = 0;
+                fechasPedido = [];
+              }else{
+                resultado += "<br />Coste: " + info[key];
+              }
 
-              /*fechasPedido.push(dayOfMonth);
-              fechasPedido[count].setDate(dayOfMonth + i);
-              */
-              count++;
             }
-          }
-          resultado += "JSON-> " + JSON.stringify(info) + "<br />";
-        break;
-        case '2':
-        var uno = 1;
-        break;
-        default:
-        break;
 
-      }
-        
-        $(".the-return").html(
-          "Result: " + data['result'] + "<br />Resultado: " + resultado +"<br />"
-        );
-        alert("Form submitted successfully.\nReturned json: " + data["json"]);
+            break;
+            case '3':
+            resultado += "Hola->";
+            default:
+            break;
+          }
+          
+          $(".the-return").html(
+            "Resultado: <br />" + resultado +"<br />"
+          );
+        //  alert("Form submitted successfully.\nReturned json: " + data["json"]);
+        }
       }
     });
     return false;
@@ -97,9 +127,10 @@ $("document").ready(function(){
       <option value="0">Ninguno</option>
       <option value="1">Lineal</option>
       <option value="2">Alisamiento Exponencial</option>
+      <option value="3">Multiescenarios</option>
     </select>
     <input type="hidden" name="form" value="1" />
-    <input type="submit" name="submit" value="Submit form"  /></p>
+    <input type="submit" name="submit" value="Calcular"  /></p>
   </form>
 </div>
 
@@ -122,14 +153,42 @@ $("document").ready(function(){
       <option value="0">Ninguno</option>
       <option value="1">Lineal</option>
       <option value="2">Alisamiento Exponencial</option>
+    <!--  <option value="3">Multiescenarios</option>-->
     </select>
     <input type="hidden" name="form" value="2" />
-  <input type="submit" name="submit" value="Submit form"  />
+  <input type="submit" name="submit" value="Calcular"  />
 </form>
 </div>
 
+<!--Calculo para hospital 
+<div class="col-md-3">
+  <form action="response.php" class="js-ajax-php-json" method="post" accept-charset="utf-8">
+    <legend>Calcular por hospital</legend>
+    <select name="id_hospital">
+      <option value="" disabled selected>Hospital</option>
+      <? foreach($conn->query($sql_hospital) as $hospital) {
+          echo '<option value= "' . $hospital['id'] .'" > ' . $hospital['nombre'].'</option>';
+        }
+     ?>
+    </select>
+    <br>
+    <input type="number" name="horizonte" title="Horizonte de días de cálculo" placeholder="Horizonte de días de cálculo">
+    <br>
+    <input type="number" name="numpedidos" title="Número de días de pedido" placeholder="Número de días de pedido">
+    <p>Estimador: </p>
+    <select name="estimador">
+      <option value="0">Ninguno</option>
+      <option value="1">Lineal</option>
+      <option value="2">Alisamiento Exponencial</option>
+      <option value="3">Multiescenarios</option>
+    </select>
+    <input type="hidden" name="form" value="3" />
+    <input type="submit" name="submit" value="Calcular"  />
+  </form>
+</div>
+-->
 <div class="the-return" id="response">
-  [HTML is replaced when successful.]
+  Resultado:
 </div>
 
 <?
