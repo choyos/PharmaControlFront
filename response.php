@@ -6,7 +6,9 @@ if (is_ajax()) {
   if (isset($_POST["action"]) && !empty($_POST["action"])) { //Checks if action value exists
     $action = $_POST["action"];
     switch($action) { //Switch case for value of action
-      case "test": test_function(); break;
+      case "test": 
+        $result = test_function(); 
+      break;
     }
   }
 }
@@ -53,6 +55,7 @@ function test_function(){
       $segundosDia = 86400;
       $diasPeriodo = $_POST['horizonte'];
       $numPeriodos = 10;
+      fwrite($ficheroMed, "".$numPeriodos."\n");
       $diasTotal = $diasPeriodo * $numPeriodos;
       $fechaFin = date("d-m-Y");            //Hoy
       $fechaInicio = date("d-m-Y", time() - $diasTotal*$segundosDia); //Un mes antes
@@ -82,8 +85,8 @@ function test_function(){
 */
     }
     fclose($ficheroMed);  //Se cierra el fichero, eliminando el manejador
-    //Ejecutar ./OFHTipo x
-    $return['result'] = "Funciona";
+    //Ejecutar ./OFHTipo x. El parametro 4 identifica al tipo de calculo que es el código para que la funcion lanzaC ejecute ./OFHMult
+    $return['result'] = lanzaC('4', $_POST['horizonte'], $_POST['numpedidos']);
 
     $return['json'] = json_encode($return);
     echo json_encode($return);
@@ -247,7 +250,9 @@ function test_function(){
 
     $return['json'] = json_encode($return);
     echo json_encode($return);
+    
   }
+
 }
 
 
@@ -265,7 +270,7 @@ function calculaRepartidos($horizonte, $estimador, $idFarmaco){
       $repartidos = array();
       $fechaFin = date("Y-m-d");            //Hoy
         $fechaInicio = date("Y-m-d", time() - $diasPrevios*$segundosDia); //Un mes antes
-      $sql = "SELECT * FROM `registros` WHERE id_farmaco = '".$idFarmaco."' AND `fecha` BETWEEN '".$fechaInicio."' AND '".$fechaFin."' ORDER BY `fecha`";
+      $sql = "SELECT * FROM `registros` WHERE id_farmaco = '".$idFarmaco."' AND `fecha` BETWEEN '".$fechaInicio."' AND '".$fechaFin."' ORDER BY `fecha` AND `tipo` = '1'";
 
       foreach ($conn->query($sql) as $registro) {
         array_push($repartidos, $registro['cantidad']);
@@ -289,7 +294,7 @@ function calculaRepartidos($horizonte, $estimador, $idFarmaco){
     
       for ($i=0; $i < $horizonte; $i++) {
         if( $i == 0){
-          $sql = "SELECT * FROM `registros` WHERE id_farmaco = '".$idFarmaco."' AND `fecha` BETWEEN '".$fechaInicio."' AND '".$fechaFin."' ORDER BY `fecha`";
+          $sql = "SELECT * FROM `registros` WHERE id_farmaco = '".$idFarmaco."' AND `fecha` BETWEEN '".$fechaInicio."' AND '".$fechaFin."' ORDER BY `fecha` AND `tipo` = '1'";
 
           foreach ($conn->query($sql) as $registro) {
             array_push($repartidos, $registro['cantidad']);
@@ -298,7 +303,7 @@ function calculaRepartidos($horizonte, $estimador, $idFarmaco){
           $media = round(array_sum($repartidos)/28);  //Media del mes
           array_push($estimacion, $media);
         }else{
-          $sql = "SELECT * FROM `registros` WHERE id_farmaco = '".$idFarmaco."' AND `fecha` BETWEEN '".$fechaFin."' AND '".$fechaInicio."' ORDER BY `fecha`";
+          $sql = "SELECT * FROM `registros` WHERE id_farmaco = '".$idFarmaco."' AND `fecha` BETWEEN '".$fechaFin."' AND '".$fechaInicio."' ORDER BY `fecha` AND `tipo` = '1'";
 
           foreach ($conn->query($sql) as $registro) {
             array_push($repartidos, $registro['cantidad']);
@@ -373,6 +378,10 @@ function calculaRepartidos($horizonte, $estimador, $idFarmaco){
         array_push($estimacion, round(array_sum($arrayMedia)/$sumPonderacion));
 
       }
+
+    break;
+
+    case '3':
 
     break;
     

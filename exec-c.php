@@ -1,7 +1,5 @@
 <?
 	function lanzaC($tipo, $horizonte, $numpedidos){
-
-
 		switch ($tipo) {
 			case '1':
 				$result = shell_exec("./OFHMed '".$horizonte."' '".$numpedidos."'");
@@ -17,12 +15,14 @@
 					echo "Result-> ".$result.".\nHorizonte-> ".$horizonte.".\nNumPedidos->".$numpedidos."";
 				}
 			break;
+			case '4':
+				$result = shell_exec("./OFHMulti '".$horizonte."' '".$numpedidos."'");
+				//$result = $restult." Hola";
+			break;
 			default:
 				echo "Error";
 			break;
 		}
-		
-
 		return $result;
 	}
 ?>

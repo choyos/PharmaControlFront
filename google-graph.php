@@ -2,6 +2,10 @@
 $title = "Gráficas";
 include("header.php");
 
+
+
+
+
 $inicio = $_POST['inicio']; //yyyy-mm-dd
 $fin = $_POST['fin'];
 $farmaco = urldecode($_POST['farmaco_graf']);
@@ -9,18 +13,68 @@ $farmaco = urldecode($_POST['farmaco_graf']);
 $days = strtotime($fin) - strtotime($inicio);
 $days = $days / 86400;
 
-$sql = "SELECT * FROM `registro` WHERE `nombre` LIKE '$farmaco' AND `fecha` <= '$fin' AND `fecha` >= '$inicio' ";
+/****************************************
+***OBTENEMOS STOCK INICIAL DEL PERIODO***
+*****************************************/
+$sql2 = "SELECT * FROM `farmacos` WHERE `id` = ".$_POST['id_farmacy']."";
+$result = mysqli_query($conn, $sql2);
+while($block = mysqli_fetch_assoc($result)){
+  $stockIni = $block['stock'];
+  ?>
+  <h3>Gráficas de fármaco: <?echo ucfirst($block['nombre'])?></h3>
+  <?
+}
+$sql = "SELECT * FROM `registros` WHERE `id_farmaco` = ".$_POST['id_farmacy']." AND `fecha` >= '".$_POST['inicio']."' ORDER BY `fecha` DESC";
+
+$result = mysqli_query($conn, $sql);
+while($block = mysqli_fetch_assoc($result)){
+  if($block['tipo'] == 1){
+    $stockIni = $stockIni + $block['cantidad'];
+  }else{
+    $stockIni = $stockIni - $block['cantidad'];
+  }
+   
+}
+
+
+
+/*******************************************
+**GENERAMOS LOS VECTORES PARA LAS GRAFICAS**
+********************************************/
+$sql = "SELECT * FROM `registros` WHERE `id_farmaco` = ".$_POST['id_farmacy']." AND `fecha` <= '".$_POST['fin']."' AND `fecha` >= '".$_POST['inicio']."' ORDER BY `fecha`";
+
 //echo $sql;die();
 $result = mysqli_query($conn, $sql);
 //echo mysqli_affected_rows($conn);
 $index = 0;
 while($block = mysqli_fetch_assoc($result)){
   if($index == 0){
-    $calendar = '[ new Date('.str_replace("-", ", ", $block['fecha']).'), '.$block['cantidad'].' ]';
-    $bar = "['".$block['fecha']."', ".$block['cantidad']."]";
+    
+    if($block['tipo'] == 1){
+     
+      $bar = "['".$block['fecha']."', ".$block['cantidad']."]";
+
+      $stockIni = $stockIni - $block['cantidad'];
+      $area = "['".$block['fecha']."', ".$stockIni."]";
+    }else{
+
+      $bar = "['".$block['fecha']."', ".$index."]";
+      $stockIni = $stockIni + $block['cantidad'];
+      $area = "['".$block['fecha']."', ".$stockIni."]";
+    }
+    
+    $area = "['".$block['fecha']."', ".$block['cantidad']."]";
   }else{
-    $calendar .= ', [ new Date('.str_replace("-", ", ", $block['fecha']).'), '.$block['cantidad'].' ]';
-    $bar .= ",['".$block['fecha']."', ".$block['cantidad']."]";
+    if($block['tipo'] == 1){
+      $bar .= ",['".$block['fecha']."', ".$block['cantidad']."]";
+
+      $stockIni = $stockIni - $block['cantidad'];
+      $area .= ",['".$block['fecha']."', ".$stockIni."]";
+      
+    }else{
+      $stockIni = $stockIni + $block['cantidad'];
+      $area .= ",['".$block['fecha']."', ".$stockIni."]";
+    }
   }
   $index++;
 }
@@ -84,7 +138,7 @@ $index ++;
   function drawChartarea() {
     var dataarea = google.visualization.arrayToDataTable([
       ['Fecha', 'Stock'],
-      <?=$bar?>
+      <?=$area?>
     ]);
 
     var optionsarea = {

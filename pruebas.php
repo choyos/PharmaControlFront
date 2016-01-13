@@ -36,69 +36,62 @@ $("document").ready(function(){
       success: function(data) {
         var resultado = "";
         var msDia = 86400000;
-        if(data['estimador'] == 3){
-          resultado += "Multiescenarios: " + data['result'];
-          $(".the-return").html(
-            "Resultado: <br />" + resultado +"<br />"
-          );
-        }else{
-          switch(data['form']){
-            case '1':
-            info = JSON.parse(data['result']);
-              var count = 0;
-              var fechasPedido = new Array();
-              for (i in info.pedidoOpt){
-                if(info.pedidoOpt[i] != 0){
+        switch(data['form']){
+          case '1':
+          info = JSON.parse(data['result']);
+            var count = 0;
+            var fechasPedido = new Array();
+            for (i in info.pedidoOpt){
+              if(info.pedidoOpt[i] != 0){
+                fechasPedido.push(new Date());
+                msDate = fechasPedido[count].getTime();
+                fechasPedido[count] = new Date(msDate + i * msDia);
+                resultado += " Fecha: " + fechasPedido[count].getDate() + "/" + (fechasPedido[count].getMonth()+1) + "/" + fechasPedido[count].getFullYear() + " -> Cantidad: " + info.pedidoOpt[i] + "<br />";
+                count++;
+              }
+            }
+            resultado += " Coste: " + info.Coste_med + "<br />";
+          break;
+          case '2':
+          info = JSON.parse(data['result']);
+          var count = 0;
+          var fechasPedido = new Array();
+          var msDate;
+          for (var key in info){
+            far = key.substr(0, key.indexOf('.'));
+            if (key != "Coste_lab"){
+              resultado += "" + far + ":<br />";
+              for (var key2 in info[key].pedidoOpt){
+                if(info[key].pedidoOpt[key2] != 0){
                   fechasPedido.push(new Date());
                   msDate = fechasPedido[count].getTime();
                   fechasPedido[count] = new Date(msDate + i * msDia);
-                  resultado += " Fecha: " + fechasPedido[count].getDate() + "/" + (fechasPedido[count].getMonth()+1) + "/" + fechasPedido[count].getFullYear() + " -> Cantidad: " + info.pedidoOpt[i] + "<br />";
+                  resultado += "- Fecha: " + fechasPedido[count].getDate() + "/" + (fechasPedido[count].getMonth()+1) + "/" + fechasPedido[count].getFullYear() + " -> Cantidad: " + info[key].pedidoOpt[key2] + "<br />";
                   count++;
                 }
               }
-              resultado += " Coste: " + info.Coste_med + "<br />";
-            break;
-            case '2':
-            info = JSON.parse(data['result']);
-            var count = 0;
-            var fechasPedido = new Array();
-            var msDate;
-            for (var key in info){
-              far = key.substr(0, key.indexOf('.'));
-              if (key != "Coste_lab"){
-                resultado += "" + far + ":<br />";
-                for (var key2 in info[key].pedidoOpt){
-                  if(info[key].pedidoOpt[key2] != 0){
-                    fechasPedido.push(new Date());
-                    msDate = fechasPedido[count].getTime();
-                    fechasPedido[count] = new Date(msDate + i * msDia);
-                    resultado += "- Fecha: " + fechasPedido[count].getDate() + "/" + (fechasPedido[count].getMonth()+1) + "/" + fechasPedido[count].getFullYear() + " -> Cantidad: " + info[key].pedidoOpt[key2] + "<br />";
-                    count++;
-                  }
-                }
-                if(count == 0 ){
-                  resultado += "- No se requieren de pedidos en este periodo <br />";
-                }
-                count = 0;
-                fechasPedido = [];
-              }else{
-                resultado += "<br />Coste: " + info[key];
+              if(count == 0 ){
+                resultado += "- No se requieren de pedidos en este periodo <br />";
               }
-
+              count = 0;
+              fechasPedido = [];
+            }else{
+              resultado += "<br />Coste: " + info[key];
             }
 
-            break;
-            case '3':
-            resultado += "Hola->";
-            default:
-            break;
           }
-          
-          $(".the-return").html(
-            "Resultado: <br />" + resultado +"<br />"
-          );
-        //  alert("Form submitted successfully.\nReturned json: " + data["json"]);
+
+          break;
+          case '3':
+          resultado += "Hola->";
+          default:
+          break;
         }
+        
+        $(".the-return").html(
+          "Resultado: <br />" + resultado +"<br />"
+        );
+      //  alert("Form submitted successfully.\nReturned json: " + data["json"]);
       }
     });
     return false;

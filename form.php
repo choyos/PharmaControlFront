@@ -22,23 +22,31 @@ $inicio = date("Y-m-d", time() - 2419200);//2419200 segundos = 4 semanas;
 
 
 <div class="col-md-3">
-  <form id="form-registro" action="registro.php">
+  <form id="form-registro">
   <h3>Insertar datos</h3>
-  <p><select name="id_farmacy">
+  <p><select id="farmaco" name="id_farmacy">
       <option value="" disabled selected>Farmaco</option>
-      <? foreach($conn->query($sql_farmacos) as $farmaco) {
+      <? 
+      if($_SESSION['permisos'] == 0){
+        foreach($conn->query($sql_farmacos) as $farmaco) {
           echo '<option value= "' . $farmaco['id'] .'" > ' . $farmaco['nombre'].'</option>';
-        } 
+        }
+      }else{
+        $sql = "SELECT farmacos.id, farmacos.nombre FROM farmacos LEFT JOIN laboratorios ON farmacos.id_lab = laboratorios.id WHERE laboratorios.id_hospital = '".$_SESSION['permisos']."'";
+        foreach ($conn->query($sql) as $farmaco) {
+          echo '<option value= "' . $farmaco['id'] .'" > ' . $farmaco['nombre'].'</option>';
+        }
+      } 
      ?>
   </select></p>
-  <p><select name="inorout">
+  <p><select id="tipo" name="inorout">
     <option value="" disabled selected>Entrada/Salida</option>
-    <option value="1">Entrada</option>
-    <option value="2">Salida</option>
+    <option value="2">Entrada</option>
+    <option value="1">Salida</option>
   </select></p>
 
   <p>Cantidad: <input type="number" id="consumo" name="cantidad"></p>
-  <p>Fecha: <input type="date" id="insert-date" name="llegada" value=""></p>
+  <p>Fecha: <input type="date" id="insert-date" name="llegada"></p>
   <input type="submit" value="Enviar">
   <p id="msg-insertar" style="color: red"></p>
   </form>
@@ -48,11 +56,19 @@ $inicio = date("Y-m-d", time() - 2419200);//2419200 segundos = 4 semanas;
 <div class="col-md-3">
   <form id="form-consulta" method="post" action="/google-graph" target="_blank">
   <h3>Histórico de datos</h3>
-  <p><select name="id_farmacy">
+  <p><select id="farmaco" name="id_farmacy">
       <option value="" disabled selected>Farmaco</option>
-      <? foreach($conn->query($sql_farmacos) as $farmaco) {
+      <? 
+      if($_SESSION['permisos'] == 0){
+        foreach($conn->query($sql_farmacos) as $farmaco) {
           echo '<option value= "' . $farmaco['id'] .'" > ' . $farmaco['nombre'].'</option>';
-        } 
+        }
+      }else{
+        $sql = "SELECT farmacos.id, farmacos.nombre FROM farmacos LEFT JOIN laboratorios ON farmacos.id_lab = laboratorios.id WHERE laboratorios.id_hospital = '".$_SESSION['permisos']."'";
+        foreach ($conn->query($sql) as $farmaco) {
+          echo '<option value= "' . $farmaco['id'] .'" > ' . $farmaco['nombre'].'</option>';
+        }
+      } 
      ?>
     </select></p>
   <p>Fecha inicio: <input id="fecha-inicio" type="date" name="inicio" /></p>
@@ -84,12 +100,13 @@ $(document).ready(function() {
   
   $("#farmaco").change(function(){
     console.log("change");
-    drawChartarea();
+    //drawChartarea();
   });
   
   $('#form-registro').submit(function(){
     
     var fecha = $("#insert-date").val();
+    var tipo = $("#tipo").val();
     var consumo = $("#consumo").val();
     var farmaco = $("#farmaco").val();
     
@@ -99,14 +116,14 @@ $(document).ready(function() {
       
       $.ajax({
         method: "POST",
-        url: "registro.php",
-        data: { fecha: fecha, consumo: consumo, farmaco: farmaco }
+        url: "insertar.php",
+        data: { fecha: fecha, consumo: consumo, farmaco: farmaco, tipo: tipo}
       })
         .done(function( msg ) {
           if(msg){
             $('#msg-insertar').html("Registrado con éxito");
             document.getElementById("msg-insertar").style.color = "green";
-          //  drawChartarea();
+            drawChartarea();
           }
           else
             $('#msg-insertar').html("Error al registrar");
@@ -138,7 +155,7 @@ function drawChartarea() {
     type: "POST",
     url: "/grafica",
     dataType: "json",
-    data: { inicio: '<?=$inicio?>', fin: '<?=$fin?>', farmaco_graf: $('#farmaco').val()}
+    data: { inicio: $('#fecha-inicio'), fin: $('#fecha-fin'), farmaco_graf: $('#farmaco').val()}
     })
     .done(function( jsonData ) {
 

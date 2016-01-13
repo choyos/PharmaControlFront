@@ -4,7 +4,7 @@
 	mysqli_set_charset($conn, "utf8");
 	// Check connection
 	if (mysqli_connect_errno()){
-	echo "Imposible conectar: " . mysqli_connect_error();
+		echo "Imposible conectar: " . mysqli_connect_error();
 	}
 
 	switch ($_POST['inorout']) {
@@ -15,8 +15,17 @@
 			}
 			$stockAct = $stockAct + $_POST['cantidad'];
 			$sql = "UPDATE `farmacos` SET stock = '" . $stockAct . "' WHERE id = '".$_POST['id_farmacy']."'";
-			$sql = "INSERT INTO `registros` (`cantidad`,`id_farmaco`,`fecha`, `tipo`) VALUES ('".$_POST['cantidad']."','".$_POST['id_farmacy']."','".$_POST['llegada']."','".$_POST['inorout']."')";
-			mysqli_query($conn, $sql);
+			if ($conn->query($sql) === TRUE) {
+				$sql = "INSERT INTO `registros` (`cantidad`,`id_farmaco`,`fecha`, `tipo`) VALUES ('".$_POST['cantidad']."','".$_POST['id_farmacy']."','".$_POST['llegada']."','".$_POST['inorout']."')";
+				if ($conn->query($sql) === TRUE) {
+				  echo True
+				} else {
+				  echo "Error: " . $sql . "<br>" . $conn->error;
+				}
+			} else {
+			  echo "Error: " . $sql . "<br>" . $conn->error;
+			}
+			
 		break;
 		case '2':
 			$sql = "SELECT stock FROM `farmacos` WHERE id ='".$_POST['id_farmacy']."'";
@@ -25,14 +34,22 @@
 			}
 			$stockAct = $stockAct - $_POST['cantidad'];
 			$sql = "UPDATE `farmacos` SET stock = '".$stockAct."' WHERE id = '".$_POST['id_farmacy']."'";
-			$sql = "INSERT INTO `registros` (`cantidad`,`id_farmaco`,`fecha`, `tipo`) VALUES ('".$_POST['cantidad']."','".$_POST['id_farmacy']."','".$_POST['llegada']."','".$_POST['inorout']."')";
-			mysqli_query($conn, $sql);
+			if ($conn->query($sql) === TRUE) {
+				$sql = "INSERT INTO `registros` (`cantidad`,`id_farmaco`,`fecha`, `tipo`) VALUES ('".$_POST['cantidad']."','".$_POST['id_farmacy']."','".$_POST['llegada']."','".$_POST['inorout']."')";
+				if ($conn->query($sql) === TRUE) {
+				  echo True
+				} else {
+				  echo "Error: " . $sql . "<br>" . $conn->error;
+				}
+			} else {
+			  echo "Error: " . $sql . "<br>" . $conn->error;
+			}
+			
 		break;
 		default:
-			# code...
-			break;
+			echo "Error";	
+		break;
 	}
 
-	echo True;
-	header('Location: /form');
+//	header('Location: /form');
 ?>

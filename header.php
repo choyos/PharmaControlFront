@@ -43,16 +43,15 @@ if($title != "Acceso al portal"){
         <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Menú de <?=ucfirst($_SESSION['usuario'])?>
         <span class="caret"></span></button>
         <ul class="dropdown-menu dropdown-menu-right">
+          <li><a href="/form"><i class="fa fa-bar-chart"></i>  Inicio</a></li>
+          <li><a href="/pruebas"><i class="fa fa-calculator"></i>  Calcular pedido</a></li>
+          <li><a href="/panel-de-control"><i class="fa fa-cogs">  Panel del Control</i></a></li>
           <?
           if($_SESSION['permisos'] == 0){
           ?>
-          <li><a href="/panel-de-control"><i class="fa fa-cogs">  Panel del Control</i></a></li>
           <li><a href="/subir-fichero"><i class="fa fa-cloud-upload"></i>  Subir fichero</a></li>
           <?}?>
-          <li><a href="/calculate"><i class="fa fa-calculator"></i>  Calcular pedido</a></li>
-          <li><a href="/form"><i class="fa fa-bar-chart"></i>  Inicio</a></li>
           <li><a href="/log-out"><i class="fa fa-sign-out"></i>  Cerrar sesión</a></li>
-          <li><a href="/pruebas"><i class="fa fa-exclamation-triangle"></i> Pruebas</a></li>
         </ul>
       </div>
     </div>

@@ -15,8 +15,8 @@ switch ($form) {
 	  mysqli_query($conn, $sql);
 	  break;
 	case "2":
-	  $sql = $conn->prepare("DELETE FROM `usuarios` WHERE user = ? AND id_hospital = ?");
-	  $sql->execute(array($_POST['nombre'], $_POST['id_hospital']));
+	  $sql = "DELETE FROM `usuarios` WHERE user = '".$_POST['nombre']."' AND id_hospital = '".$_POST['id_hospital']."'";
+	  mysqli_query($conn, $sql);
 	  break;
 	case "3":
 	  $sql = "INSERT INTO `farmacos`(`nombre`, `coste_almacenamiento`, `coste_oportunidad`, `coste_pedido`, `coste_recogida`,`coste_sin_stock`,`precio_med`, `minimo_uds`,`maximo_uds`, `id_lab`, `stock`) VALUES ('".$_POST['nombre']."', '".$_POST['coste_almacenamiento']."', '".$_POST['coste_oportunidad']."', '".$_POST['coste_pedido']."', '".$_POST['coste_recogida']."', '".$_POST['coste_sin_stock']."', '".$_POST['precio_med']."', '".$_POST['minimo_uds']."', '".$_POST['maximo_uds']."', '".$_POST['id_lab']."', '".$_POST['stock']."')";

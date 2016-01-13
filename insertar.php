@@ -10,8 +10,30 @@ if (mysqli_connect_errno()){
 $fecha = $_POST['fecha'];
 $consumo = $_POST['consumo'];
 $farmaco = $_POST['farmaco'];
+$tipo = $_POST['tipo'];
 
-$sql = "INSERT INTO `registro`(`nombre`, `cantidad`, `fecha`) VALUES ('".$farmaco."', ".$consumo.", '".$fecha."') ON DUPLICATE KEY UPDATE `cantidad` = ".$consumo;
+//Obtenemos stock actual
+$sqlStock = "SELECT * FROM `farmacos` WHERE id = '".$farmaco."'";
+
+foreach ($conn->query($sqlStock) as $value) {
+	$stockAct = $value['stock'];
+}
+
+//Actualizamos el stock actual
+if($tipo == 1){
+	$stockAct = $stockAct - $consumo;
+}else if($tipo == 2){
+	$stockAct = $stockAct + $consumo;
+}
+
+//Lo actualizamos en la base de datos
+
+$sqlStock = "UPDATE `farmacos` SET stock = '" . $stockAct . "' WHERE id = '".$farmaco."'";
+mysqli_query($conn, $sqlStock);
+
+
+//Insertamos el valor del registro
+$sql = "INSERT INTO `registros`(`id_farmaco`, `cantidad`, `fecha`, `tipo`) VALUES ('".$farmaco."', ".$consumo.", '".$fecha."', '".$tipo."') ON DUPLICATE KEY UPDATE `cantidad` = ".$consumo;
 
 echo mysqli_query($conn, $sql);
 
