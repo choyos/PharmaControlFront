@@ -13,7 +13,7 @@ $farmaco = urldecode($_POST['farmaco_graf']);
 $days = strtotime($fin) - strtotime($inicio);
 $days = $days / 86400;
 
-$sql = "SELECT * FROM `registro` WHERE `nombre` LIKE '$farmaco' AND `fecha` <= '$fin' AND `fecha` >= '$inicio' ";
+$sql = "SELECT * FROM `registros` WHERE `id_farmaco` = '".$_POST['id_farmacy']."' AND `fecha` <= '$fin' AND `fecha` >= '$inicio' ORDER BY `fecha` ";
 //echo $sql;die();
 $result = mysqli_query($conn, $sql);
 //echo mysqli_affected_rows($conn);

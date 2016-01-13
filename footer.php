@@ -1,8 +1,9 @@
 <div class="col-md-12">
   <div id="footer">
-    <img style="width: 98px; height: 65px;" alt="logous" src="/img/US.gif" />
+  	<img alt="idener" src="/img/idener.png" />
+    <img style="width: 98px; height: 65px;" alt="logous" src="/img/us.png" />
     <img style="width: 198px; height: 65px;" alt="logo reina" src="/img/HospitalReinaSofiaCordoba-logo.jpg" />
-    <img style="width: 198px; height: 65px;" alt="logo san juan" src="/img/san_juan.jpg" />
+    <img style="height: 65px;" alt="logo san juan" src="/img/san_juan.jpg" />
   </div>
 </div>
 <!-- Start of StatCounter Code for Default Guide -->

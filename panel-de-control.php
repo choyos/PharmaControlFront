@@ -19,6 +19,9 @@ include("header.php");
     <p>Añadir usuario</p>
     <input type="text" name="nombre" placeholder="nombre">
     <input type="text" name="clave" placeholder="clave">
+    <?
+      if($_SESSION['permisos'] == 0){
+    ?>
     <select name="id_hospital">
       <option value="" disabled selected>Permisos/Hospital</option>
       <? foreach($conn->query($sql_pass) as $hospital) {
@@ -26,6 +29,17 @@ include("header.php");
         } 
      ?>
     </select>
+    <?}else{?>
+    <select name="id_hospital">
+      <option value="" disabled selected>Permisos/Hospital</option>
+      <? 
+      $sql = "SELECT id, nombre FROM hospital WHERE id = '".$_SESSION['permisos']."'";
+      foreach ($conn->query($sql) as $hospital) {
+        echo '<option value= "' . $hospital['id'] .'" > ' . $hospital['nombre'].'</option>';
+      }
+      ?>
+    </select>
+    <?}?>
     <input type="hidden" name="form" value="1" />
     <p><input type="submit" value="Añadir" /></p>
   </form>
@@ -36,6 +50,9 @@ include("header.php");
   <form id="eliminar-usuario" method="post" action="/admin-panel-control">
     <p>Eliminar usuario</p>
     <input type="text" name="nombre" placeholder="nombre">
+    <?
+      if($_SESSION['permisos'] == 0){
+    ?>
     <select name="id_hospital">
       <option value="" disabled selected>Permisos/Hospital</option>
       <? foreach($conn->query($sql_pass) as $hospital) {
@@ -43,6 +60,17 @@ include("header.php");
         } 
      ?>
     </select>
+    <?}else{?>
+    <select name="id_hospital">
+      <option value="" disabled selected>Permisos/Hospital</option>
+      <? 
+      $sql = "SELECT id, nombre FROM hospital WHERE id = '".$_SESSION['permisos']."'";
+      foreach ($conn->query($sql) as $hospital) {
+        echo '<option value= "' . $hospital['id'] .'" > ' . $hospital['nombre'].'</option>';
+      }
+      ?>
+    </select>
+    <?}?>
     <input type="hidden" name="form" value="2" />
     <p><input type="submit" value="Eliminar" /></p>
   </form>
@@ -63,6 +91,9 @@ include("header.php");
     <input type="number" name="maximo_uds" placeholder="máximo">
     <input type="number" name="stock" placeholder="stock actual">
     <input type="text" name="incremento_uds" title="Tamaños de pedido (separar con comas sin espacio)" placeholder="Tamaños de pedido (separar con comas sin espacio)">
+    <?
+      if($_SESSION['permisos'] == 0){
+    ?>
     <select name="id_lab">
       <option value="" disabled selected>Laboratorio</option>
       <? foreach($conn->query($sql_Labs) as $lab) {
@@ -70,6 +101,17 @@ include("header.php");
         } 
      ?>
     </select>
+    <?}else{?>
+    <select name="id_lab">
+      <option value="" disabled selected>Laboratorio</option>
+      <? 
+      $sql = "SELECT id, nombre FROM laboratorios WHERE id_hospital = '".$_SESSION['permisos']."'";
+      foreach ($conn->query($sql) as $lab) {
+        echo '<option value= "' . $lab['id'] .'" > ' . $lab['nombre'].'</option>';
+      }
+      ?>
+    </select>
+    <?}?>
     <input type="hidden" name="form" value="3" />
     <p><input type="submit" value="Añadir" /></p>
   </form>
@@ -80,6 +122,9 @@ include("header.php");
   <form id="eliminar-farmaco" method="post" action="/admin-panel-control">
     <p>Eliminar fármaco</p>
     <input type="text" name="nombre" placeholder="nombre">
+    <?
+      if($_SESSION['permisos'] == 0){
+    ?>
     <select name="id_lab">
       <option value="" disabled selected>Laboratorio</option>
       <? foreach($conn->query($sql_Labs) as $lab) {
@@ -87,6 +132,17 @@ include("header.php");
         } 
      ?>
     </select>
+    <?}else{?>
+    <select name="id_lab">
+      <option value="" disabled selected>Laboratorio</option>
+      <? 
+      $sql = "SELECT id, nombre FROM laboratorios WHERE id_hospital = '".$_SESSION['permisos']."'";
+      foreach ($conn->query($sql) as $lab) {
+        echo '<option value= "' . $lab['id'] .'" > ' . $lab['nombre'].'</option>';
+      }
+      ?>
+    </select>
+    <?}?>
     <input type="hidden" name="form" value="4" />
     <p><input type="submit" value="Eliminar" /></p>
   </form>
@@ -97,6 +153,9 @@ include("header.php");
     <p>Añadir laboratorio</p>
     <input type="text" name="nombre" placeholder="nombre">
     <input type="number" name="retraso_pedido" placeholder="dias de retraso de pedido">
+    <?
+      if($_SESSION['permisos'] == 0){
+    ?>
     <select name="id_hospital">
       <option value="" disabled selected>Hospital</option>
       <? foreach($conn->query($sql_hospital) as $hospital) {
@@ -104,6 +163,17 @@ include("header.php");
         } 
      ?>
     </select>
+    <?}else{?>
+    <select name="id_hospital">
+      <option value="" disabled selected>Hospital</option>
+      <? 
+      $sql = "SELECT id, nombre FROM hospital WHERE id = '".$_SESSION['permisos']."'";
+      foreach ($conn->query($sql) as $hospital) {
+        echo '<option value= "' . $hospital['id'] .'" > ' . $hospital['nombre'].'</option>';
+      }
+      ?>
+    </select>
+    <?}?>
     <input type="hidden" name="form" value="5" />
     <p><input type="submit" value="Añadir" /></p>
   </form>
@@ -113,6 +183,9 @@ include("header.php");
   <form id="eliminar-laboratorio" method="post" action="/admin-panel-control">
     <p>Eliminar laboratorio</p>
     <input type="text" name="nombre" placeholder="nombre">
+    <?
+      if($_SESSION['permisos'] == 0){
+    ?>
     <select name="id_hospital">
       <option value="" disabled selected>Hospital</option>
       <? foreach($conn->query($sql_hospital) as $hospital) {
@@ -120,6 +193,17 @@ include("header.php");
         } 
      ?>
     </select>
+    <?}else{?>
+    <select name="id_hospital">
+      <option value="" disabled selected>Hospital</option>
+      <? 
+      $sql = "SELECT id, nombre FROM hospital WHERE id = '".$_SESSION['permisos']."'";
+      foreach ($conn->query($sql) as $hospital) {
+        echo '<option value= "' . $hospital['id'] .'" > ' . $hospital['nombre'].'</option>';
+      }
+      ?>
+    </select>
+    <?}?>
     <input type="hidden" name="form" value="6" />
     <p><input type="submit" value="Eliminar" /></p>
   </form>
