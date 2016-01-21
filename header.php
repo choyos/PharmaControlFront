@@ -28,7 +28,10 @@ if(empty($_SESSION) && $title != "Acceso al portal"){
 <body>
 <?
 
-$conn = mysqli_connect("db597300977.db.1and1.com", "dbo597300977", "PharmaControl", "db597300977");
+$conn = new mysqli("db597300977.db.1and1.com", "dbo597300977", "PharmaControl", "db597300977");
+  if ($conn->connect_error){
+    die("Connection failed: " . $conn->connect_error);
+  }
 //echo "<pre>";var_dump($conn);die();
 mysqli_set_charset($conn, "utf8");
 // Check connection
@@ -44,7 +47,8 @@ if($title != "Acceso al portal"){
         <span class="caret"></span></button>
         <ul class="dropdown-menu dropdown-menu-right">
           <li><a href="/form"><i class="fa fa-bar-chart"></i>  Inicio</a></li>
-          <li><a href="/pruebas"><i class="fa fa-calculator"></i>  Calcular pedido</a></li>
+          <li><a href="/calculate"><i class="fa fa-calculator"></i>  Calcular pedido</a></li>
+          <li><a href="/pruebas"><i class="fa  fa-exclamation-triangle"></i>  Pruebas</a></li>
           <li><a href="/panel-de-control"><i class="fa fa-cogs">  Panel del Control</i></a></li>
           <?
           if($_SESSION['permisos'] == 0){

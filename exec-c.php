@@ -1,23 +1,22 @@
 <?
 	function lanzaC($tipo, $horizonte, $numpedidos){
+		$result = "";
 		switch ($tipo) {
 			case '1':
-				$result = shell_exec("./OFHMed '".$horizonte."' '".$numpedidos."'");
+				$result .= shell_exec("./OFHMed '".$horizonte."' '".$numpedidos."'");
 			break;
 			case '2':
-				$result = shell_exec("./OFHLab '".$horizonte."' '".$numpedidos."'");
+				$result .= shell_exec("./OFHLab '".$horizonte."' '".$numpedidos."'");
 			break;
 			case '3':
-				$result = shell_exec("./OFHHos '".$horizonte."' '".$numpedidos."'");
-				if($result == NULL){
-					echo "NOK\nHorizonte-> ".$horizonte.".\nNumPedidos->".$numpedidos."";
-				}else{
-					echo "Result-> ".$result.".\nHorizonte-> ".$horizonte.".\nNumPedidos->".$numpedidos."";
-				}
+				$result .= shell_exec("./OFHHos '".$horizonte."' '".$numpedidos."'");
 			break;
 			case '4':
-				$result = shell_exec("./OFHMulti '".$horizonte."' '".$numpedidos."'");
-				//$result = $restult." Hola";
+				$result .= shell_exec("./OFHMedMulti '".$horizonte."' '".$numpedidos."'");
+			break;
+			case '5':
+				$result .= shell_exec("./OFHLabMulti '".$horizonte."' '".$numpedidos."'");
+			//	$result = ". HolalanzaceS";
 			break;
 			default:
 				echo "Error";
