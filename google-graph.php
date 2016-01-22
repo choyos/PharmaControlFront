@@ -1,6 +1,6 @@
 <?
 $title = "Gráficas";
-include("header.php");
+include("header-graph.php");
 
 
 

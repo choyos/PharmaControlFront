@@ -12,7 +12,7 @@ include("header.php");
 <h2 style="color: red; margin-left: 15px">Panel de Control de <?echo ucfirst($_SESSION['usuario'])?></h2>
 <div class="col-md-3">
   <form id="nuevo-usuario" method="post" action="/admin-panel-control">
-    <p>Añadir usuario</p>
+    <legend>Añadir usuario</legend>
     <input type="text" name="nombre" placeholder="nombre">
     <input type="text" name="clave" placeholder="clave">
     <?
@@ -44,7 +44,7 @@ include("header.php");
 
 <div class="col-md-3">
   <form id="eliminar-usuario" method="post" action="/admin-panel-control">
-    <p>Eliminar usuario</p>
+    <legend>Eliminar usuario</legend>
     <input type="text" name="nombre" placeholder="nombre">
     <?
       if($_SESSION['permisos'] == 0){
@@ -75,7 +75,7 @@ include("header.php");
 
 <div class="col-md-3">
   <form id="nuevo-farmaco" method="post" action="/admin-panel-control">
-    <p>Añadir fármaco</p>
+    <legend>Añadir fármaco</legend>
     <input type="text" name="nombre" placeholder="nombre">
     <input type="number" name="coste_almacenamiento" placeholder="coste almacenamiento" step="0.01">
     <input type="number" name="coste_oportunidad" placeholder="coste de oportunidad" step="0.01">
@@ -116,7 +116,7 @@ include("header.php");
 
 <div class="col-md-3">
   <form id="eliminar-farmaco" method="post" action="/admin-panel-control">
-    <p>Eliminar fármaco</p>
+    <legend>Eliminar fármaco</legend>
     <input type="text" name="nombre" placeholder="nombre">
     <?
       if($_SESSION['permisos'] == 0){
@@ -146,7 +146,7 @@ include("header.php");
 
 <div class="col-md-3">
   <form id="nuevo-laboratorio" method="post" action="/admin-panel-control">
-    <p>Añadir laboratorio</p>
+    <legend>Añadir laboratorio</legend>
     <input type="text" name="nombre" placeholder="nombre">
     <input type="number" name="retraso_pedido" placeholder="dias de retraso de pedido">
     <?
@@ -177,7 +177,7 @@ include("header.php");
 
 <div class="col-md-3">
   <form id="eliminar-laboratorio" method="post" action="/admin-panel-control">
-    <p>Eliminar laboratorio</p>
+    <legend>Eliminar laboratorio</legend>
     <input type="text" name="nombre" placeholder="nombre">
     <?
       if($_SESSION['permisos'] == 0){
@@ -210,7 +210,7 @@ include("header.php");
 ?>
   <div class="col-md-3">
     <form id="nuevo-hospital" method="post" action="/admin-panel-control">
-      <p>Añadir hospital</p>
+      <legend>Añadir hospital</legend>
       <input type="text" name="nombre" placeholder="nombre">
       <input type="hidden" name="form" value="7" />
       <p><input type="submit" value="Añadir" /></p>
@@ -219,7 +219,7 @@ include("header.php");
 
     <div class="col-md-3">
     <form id="eliminar-hospital" method="post" action="/admin-panel-control">
-      <p>Eliminar hospital</p>
+      <legend>Eliminar hospital</legend>
       <input type="text" name="nombre" placeholder="nombre">
       <input type="hidden" name="form" value="8" />
       <p><input type="submit" value="Eliminar" /></p>

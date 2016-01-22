@@ -1,5 +1,5 @@
 <?
-$title = "formulario";
+$title = "Inicio";
 include("header.php");
 //yyyy-mm-dd
 $fin = date("Y-m-d"); //hoy
@@ -44,6 +44,7 @@ $inicio = date("Y-m-d", time() - 2419200);//2419200 segundos = 4 semanas;
   <p>Cantidad: <input type="number" id="consumo" name="cantidad"></p>
   <p>Fecha: <input type="date" id="insert-date" name="llegada"></p>
   <input type="submit" value="Enviar">
+  <input type="reset" value="Borrar">
   <p id="msg-insertar" style="color: red"></p>
   </form>
 </div>
@@ -108,7 +109,7 @@ $(document).ready(function() {
     
     $('#msg-insertar').empty();
     
-    if(fecha != "" && consumo != "") {
+    if(fecha != "" && consumo != "" && tipo != "" && farmaco != "") {
       
       $.ajax({
         method: "POST",
@@ -127,16 +128,16 @@ $(document).ready(function() {
       
       return false;
     } else {
-      alert("Fecha o consumo incompletos");
+      alert("Error en la insercción de datos. Por favor, rellene todos los campos");
       return false;
     }
   });
   
   $('#form-consulta').submit(function(){
-    if($("#fecha-inicio").val() != "" && $("#fecha-fin").val() != "") {
+    if($("#fecha-inicio").val() != "" && $("#fecha-fin").val() != "" && $("#farmaco").val() != "") {
       return true;
     } else {
-      alert("Inicio o fin incompletos");
+      alert("Error en la consulta del histórico. Por favor, rellene todos los campos");
       return false;
     }
   });
