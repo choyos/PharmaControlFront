@@ -121,9 +121,9 @@ $("document").ready(function(){
      ?>
     </select>
     <br>
-    <input type="number" name="horizonte" title="Horizonte de días de cálculo" placeholder="Horizonte de días de cálculo">
+    <input type="number" min="1" max="15" style="width: 200px" name="horizonte" title="Horizonte de días de cálculo" placeholder="Horizonte de días de cálculo">
     <br>
-    <input type="number" name="numpedidos" title="Número de días de pedido" placeholder="Número de días de pedido">
+    <input type="number" min="1" max="8" style="width: 200px" name="numpedidos" title="Número de días de pedido" placeholder="Número de días de pedido">
     <p>Estimador: </p>
     <select name="estimador">
       <option value="0">Ninguno</option>
@@ -147,9 +147,9 @@ $("document").ready(function(){
      ?>
     </select>
     <br>
-    <input type="number" name="horizonte" title="Horizonte de días de cálculo" placeholder="Horizonte de días de cálculo">
+    <input type="number" min="1" max="15" style="width: 200px" name="horizonte" title="Horizonte de días de cálculo" placeholder="Horizonte de días de cálculo">
     <br>
-    <input type="number" name="numpedidos" title="Número de días de pedido" placeholder="Número de días de pedido">
+    <input type="number" min="1" max="8" style="width: 200px" name="numpedidos" title="Número de días de pedido" placeholder="Número de días de pedido">
     <p>Estimador: </p>
     <select name="estimador">
       <option value="0">Ninguno</option>
